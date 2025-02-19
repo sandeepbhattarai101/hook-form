@@ -20,6 +20,11 @@ const PriceCalculation = () => {
 
   const rangeFieldArrays = useFieldArray({ control, name: "prices.ranges" });
 
+  const variationFieldArrays = useFieldArray({
+    control,
+    name: `prices.variations`, // Correct field structure
+  });
+
   const onSubmit = (data) => {
     console.log("Form Data:", data);
   };
