@@ -21,6 +21,7 @@ const PriceCalculation = ({
   serviceDataResponse,
   serviceId,
 }) => {
+  console.log("service id", serviceId);
   console.log("calculation list", calculationList);
   const { data: getGeneralRelativeType } = useGetRequest(
     "/relative-type",
@@ -70,6 +71,10 @@ const PriceCalculation = ({
       position: index + 1,
     }));
     console.log("Formatted Payload:", formattedData);
+    addPriceCalculatuion({
+      dynamicParam: calculation,
+      data: formattedData,
+    });
   };
 
   return (
