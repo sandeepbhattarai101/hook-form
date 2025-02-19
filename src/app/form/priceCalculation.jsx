@@ -4,7 +4,12 @@
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import SelectDropdown from "./selectDropdown";
-import VariationFieldArray from "./VariationFieldArray"; // Import the new component
+
+import { ArrowUp, HoverIcon, StraightArrowDown } from "../../../public/icons";
+import InputOption from "./inputOption";
+import ConstantOption from "./constantOption";
+import VariationOption from "./variationOption";
+import RangeOption from "./rangeOption";
 
 const PriceCalculation = () => {
   const { register, control, handleSubmit, watch, setValue } = useForm({
@@ -25,47 +30,8 @@ const PriceCalculation = () => {
     name: `prices.variations`, // Correct field structure
   });
 
-  // const onSubmit = (data) => {
-  //   // Process the data to match the desired payload structure
-  //   const formattedData = data.prices.map((priceItem) => {
-  //     if (priceItem.type === "range") {
-  //       return {
-  //         type: priceItem.type,
-  //         position: priceItem.position,
-  //         operator: priceItem.operator,
-  //         range: {
-  //           label: priceItem.rangeLabel,
-  //           limit: priceItem.ranges.map((range) => ({
-  //             min: range.min,
-  //             max: range.max,
-  //             value: range.value,
-  //           })),
-  //         },
-  //       };
-  //     }
-
-  //     if (priceItem.type === "variation") {
-  //       return {
-  //         type: priceItem.type,
-  //         position: priceItem.position,
-  //         operator: priceItem.operator,
-  //         variation: {
-  //           name: priceItem.variationName,
-  //           labelValue: priceItem.variations.map((variation) => ({
-  //             value: variation.value,
-  //             label: variation.fieldName,
-  //           })),
-  //         },
-  //       };
-  //     }
-
-  //     return priceItem;
-  //   });
-
-  //   console.log("Formatted Payload:", formattedData);
-  // };
-
   const onSubmit = (data) => {
+    console.log("inp", data);
     // Process the data to match the desired payload structure
     const formattedData = data.prices.map((priceItem) => {
       if (priceItem.type === "range") {
@@ -105,8 +71,8 @@ const PriceCalculation = () => {
           position: priceItem.position,
           operator: priceItem.operator,
           inputfield: {
-            label: priceItem.inputLabel,
-            value: priceItem.inputValue,
+            label: priceItem.label,
+            value: priceItem.value,
           },
         };
       }
@@ -136,160 +102,72 @@ const PriceCalculation = () => {
 
           return (
             <div key={field.id} className="mb-3 border p-3 rounded">
-              <SelectDropdown
-                title="Select Type"
-                register={register}
-                name={`prices.${index}.type`}
-                watch={watch}
-                setValue={setValue}
-                options={[
-                  { value: "input", label: "Input" },
-                  { value: "range", label: "Range" },
-                  { value: "variation", label: "Variation" },
-                  { value: "constant", label: "Constant" },
-                ]}
-              />
+              <div className="flex justify-between mt-4 border-b-10  pb-4">
+                <div>
+                  <span className="text-black text-base font-semibold  leading-snug">
+                    Calculation Order:
+                  </span>
+                  <span className="text-black text-base font-normal  leading-snug">
+                    {" "}
+                    1
+                  </span>
+                </div>
+                <span>
+                  <HoverIcon />
+                </span>
 
-              {type === "input" && (
-                <>
-                  <input
-                    {...register(`prices.${index}.value`)}
-                    placeholder="Enter value"
-                    className="border p-2 rounded w-full mb-2"
-                  />
-                  <input
-                    {...register(`prices.${index}.label`)}
-                    placeholder="Enter label"
-                    className="border p-2 rounded w-full"
-                  />
-                </>
-              )}
+                <div className="flex justify-end  gap-2">
+                  <span className="border border-gray-300 rounded-md py-1 px-[10px] flex  justify-center items-center">
+                    <ArrowUp />
+                  </span>
+                  <span className="border border-gray-300 rounded-md  py-1 px-[10px] flex justify-center items-center">
+                    <StraightArrowDown />
+                  </span>
 
-              {type === "range" && (
-                <>
-                  <input
-                    {...register(`prices.${index}.field`)}
-                    placeholder="Enter field name"
-                    className="border p-2 rounded w-full mb-2"
-                  />
-                  {rangeFieldArrays.fields.map((range, rangeIndex) => (
-                    <div key={range.id} className="flex gap-2 mb-2">
-                      <input
-                        {...register(
-                          `prices.${index}.ranges.${rangeIndex}.min`
-                        )}
-                        placeholder="Min"
-                        className="border p-2 rounded w-1/2"
-                      />
-                      <input
-                        {...register(
-                          `prices.${index}.ranges.${rangeIndex}.max`
-                        )}
-                        placeholder="Max"
-                        className="border p-2 rounded w-1/2"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => rangeFieldArrays.remove(rangeIndex)}
-                        className="bg-red-500 text-white px-2 py-1 rounded"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
                   <button
                     type="button"
-                    onClick={() =>
-                      rangeFieldArrays.append({ min: "", max: "" })
-                    }
-                    className="bg-blue-500 text-white px-3 py-1 rounded mb-2"
+                    onClick={() => remove(index)}
+                    className="bg-red-500 text-white px-2 py-1 rounded mt-2"
                   >
-                    Add Range
+                    Remove
                   </button>
-                </>
-              )}
-
-              {/* {type === "variation" && (
-                <VariationFieldArray
-                  control={control}
-                  index={index}
+                </div>
+              </div>
+              <div className="mb-4 grid grid-cols-2">
+                <SelectDropdown
+                  title="Select Type"
                   register={register}
+                  name={`prices.${index}.type`}
+                  watch={watch}
+                  setValue={setValue}
+                  options={[
+                    { value: "input", label: "Input" },
+                    { value: "range", label: "Range" },
+                    { value: "variation", label: "Variation" },
+                    { value: "constant", label: "Constant" },
+                  ]}
                 />
-              )} */}
-
+              </div>
+              {type === "input" && (
+                <InputOption register={register} index={index} />
+              )}
+              {type === "range" && (
+                <RangeOption
+                  register={register}
+                  index={index}
+                  rangeFieldArrays={rangeFieldArrays}
+                />
+              )}
               {type === "variation" && (
-                <>
-                  {/* Variation Name input (Separate from the loop) */}
-                  <input
-                    {...register(`prices.${index}.variationName`)}
-                    placeholder="Enter Variation Name"
-                    className="border p-2 rounded w-full mb-2"
-                  />
-
-                  {/* Iterate through all variations */}
-                  {variationFieldArrays.fields.map(
-                    (variation, variationIndex) => (
-                      <div key={variation.id} className="flex gap-2 mb-2">
-                        {/* Field Name input */}
-                        <input
-                          {...register(
-                            `prices.${index}.variations.${variationIndex}.fieldName`
-                          )}
-                          placeholder="Enter Field Name"
-                          className="border p-2 rounded w-1/2"
-                        />
-
-                        {/* Value input */}
-                        <input
-                          {...register(
-                            `prices.${index}.variations.${variationIndex}.value`
-                          )}
-                          placeholder="Enter Value"
-                          className="border p-2 rounded w-1/2"
-                        />
-
-                        {/* Remove button */}
-                        <button
-                          type="button"
-                          onClick={() =>
-                            variationFieldArrays.remove(variationIndex)
-                          }
-                          className="bg-red-500 text-white px-2 py-1 rounded"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    )
-                  )}
-
-                  {/* Add Variation Field button */}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      variationFieldArrays.append({ fieldName: "", value: "" })
-                    }
-                    className="bg-blue-500 text-white px-3 py-1 rounded mb-2"
-                  >
-                    Add Variation Field
-                  </button>
-                </>
-              )}
-
-              {type === "constant" && (
-                <input
-                  {...register(`prices.${index}.constantValue`)}
-                  placeholder="Enter Constant Value"
-                  className="border p-2 rounded w-full"
+                <VariationOption
+                  register={register}
+                  index={index}
+                  variationFieldArrays={variationFieldArrays}
                 />
               )}
-
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                className="bg-red-500 text-white px-2 py-1 rounded mt-2"
-              >
-                Remove
-              </button>
+              {type === "constant" && (
+                <ConstantOption register={register} index={index} />
+              )}
             </div>
           );
         })}
