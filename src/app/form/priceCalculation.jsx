@@ -8,12 +8,35 @@ import InputOption from "./inputOption";
 import ConstantOption from "./constantOption";
 import VariationOption from "./variationOption";
 import RangeOption from "./rangeOption";
-import { useGetRequest } from "../(app)/components/common/services/globalSetting";
+import {
+  useDynamicUrlPatchRequest,
+  useDynamicUrlPostRequest,
+  useGetRequest,
+} from "../(app)/components/common/services/globalSetting";
 
-const PriceCalculation = () => {
+const PriceCalculation = ({
+  calculationList,
+  serviceBody,
+  refetchCalculationList,
+  serviceDataResponse,
+  serviceId,
+}) => {
+  console.log("calculation list", calculationList);
   const { data: getGeneralRelativeType } = useGetRequest(
     "/relative-type",
     "generalRelative"
+  );
+
+  const { mutateAsync: addPriceCalculatuion } = useDynamicUrlPostRequest(
+    `/service/${serviceId ? serviceId : serviceDataResponse?.id}`,
+    "Calculation Created Successfully.",
+    `calculations-${serviceId ? serviceId : serviceDataResponse?.id}`
+  );
+
+  const { mutateAsync: updatePriceCalculation } = useDynamicUrlPatchRequest(
+    `/service/${serviceId ? serviceId : serviceDataResponse?.id}`,
+    "Calculation Updated  Successfully",
+    `calculations-${serviceId ? serviceId : serviceDataResponse?.id}`
   );
 
   console.log("get", getGeneralRelativeType);
