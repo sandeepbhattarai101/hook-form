@@ -25,12 +25,110 @@ const PriceCalculation = () => {
     name: `prices.variations`, // Correct field structure
   });
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-  };
+  // const onSubmit = (data) => {
+  //   // Process the data to match the desired payload structure
+  //   const formattedData = data.prices.map((priceItem) => {
+  //     if (priceItem.type === "range") {
+  //       return {
+  //         type: priceItem.type,
+  //         position: priceItem.position,
+  //         operator: priceItem.operator,
+  //         range: {
+  //           label: priceItem.rangeLabel,
+  //           limit: priceItem.ranges.map((range) => ({
+  //             min: range.min,
+  //             max: range.max,
+  //             value: range.value,
+  //           })),
+  //         },
+  //       };
+  //     }
 
+  //     if (priceItem.type === "variation") {
+  //       return {
+  //         type: priceItem.type,
+  //         position: priceItem.position,
+  //         operator: priceItem.operator,
+  //         variation: {
+  //           name: priceItem.variationName,
+  //           labelValue: priceItem.variations.map((variation) => ({
+  //             value: variation.value,
+  //             label: variation.fieldName,
+  //           })),
+  //         },
+  //       };
+  //     }
+
+  //     return priceItem;
+  //   });
+
+  //   console.log("Formatted Payload:", formattedData);
+  // };
+
+  const onSubmit = (data) => {
+    // Process the data to match the desired payload structure
+    const formattedData = data.prices.map((priceItem) => {
+      if (priceItem.type === "range") {
+        return {
+          type: priceItem.type,
+          position: priceItem.position,
+          operator: priceItem.operator,
+          range: {
+            label: priceItem.rangeLabel,
+            limit: priceItem.ranges.map((range) => ({
+              min: range.min,
+              max: range.max,
+              value: range.value,
+            })),
+          },
+        };
+      }
+
+      if (priceItem.type === "variation") {
+        return {
+          type: priceItem.type,
+          position: priceItem.position,
+          operator: priceItem.operator,
+          variation: {
+            name: priceItem.variationName,
+            labelValue: priceItem.variations.map((variation) => ({
+              value: variation.value,
+              label: variation.fieldName,
+            })),
+          },
+        };
+      }
+
+      if (priceItem.type === "input") {
+        return {
+          type: priceItem.type,
+          position: priceItem.position,
+          operator: priceItem.operator,
+          inputfield: {
+            label: priceItem.inputLabel,
+            value: priceItem.inputValue,
+          },
+        };
+      }
+
+      if (priceItem.type === "constant") {
+        return {
+          type: priceItem.type,
+          position: priceItem.position,
+          operator: priceItem.operator,
+          constant: {
+            constantPrice: priceItem.constantPrice,
+          },
+        };
+      }
+
+      return priceItem;
+    });
+
+    console.log("Formatted Payload:", formattedData);
+  };
   return (
-    <div className="p-4 border rounded shadow-md max-w-md mx-auto">
+    <div className="p-4 border rounded shadow-md ">
       <h2 className="text-lg font-semibold mb-4">Price Calculation</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         {fields.map((field, index) => {
