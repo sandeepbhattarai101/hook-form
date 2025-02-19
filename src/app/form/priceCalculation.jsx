@@ -8,8 +8,15 @@ import InputOption from "./inputOption";
 import ConstantOption from "./constantOption";
 import VariationOption from "./variationOption";
 import RangeOption from "./rangeOption";
+import { useGetRequest } from "../(app)/components/common/services/globalSetting";
 
 const PriceCalculation = () => {
+  const { data: getGeneralRelativeType } = useGetRequest(
+    "/relative-type",
+    "generalRelative"
+  );
+
+  console.log("get", getGeneralRelativeType);
   const { register, control, handleSubmit, watch, setValue } = useForm({
     defaultValues: {
       prices: [],
